@@ -16,3 +16,23 @@ def test_load_empty_file(tmp_path):
     file_path.write_text("")
     assert load_tasks(file_path) == []
 
+def test_save_creates_nested_directories(tmp_path):
+    nested_path = tmp_path / "deep" / "nested" / "tasks.json"
+    tasks = [{"id": 1, "title": "Nested", "completed": False, "priority": "low"}]
+    assert save_tasks(tasks, nested_path) == 1
+    assert load_tasks(nested_path) == tasks
+
+def test_save_empty_list(tmp_path):
+    file_path = tmp_path / "tasks.json"
+    assert save_tasks([], file_path) == 0
+    assert load_tasks(file_path) == []
+
+def test_save_overwrites_existing_file(tmp_path):
+    file_path = tmp_path / "tasks.json"
+    save_tasks([{"id": 1, "title": "Old", "completed": False, "priority": "low"}], file_path)
+    save_tasks([{"id": 2, "title": "New", "completed": True, "priority": "high"}], file_path)
+    loaded = load_tasks(file_path)
+    assert len(loaded) == 1
+    assert loaded[0]["title"] == "New"
+
+
