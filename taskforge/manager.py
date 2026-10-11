@@ -6,14 +6,15 @@ class TaskManager:
 
     def add(self, title):
         title = validate_title(title)
-        task = {"id": len(self.tasks) + 1, "title": title, "completed": False, "priority": "medium"}
+        next_id = max((task["id"] for task in self.tasks), default=0) + 1
+        task = {"id": next_id, "title": title, "completed": False, "priority": "medium"}
         self.tasks.append(task)
         return task
 
     def complete(self, task_id):
         for task in self.tasks:
             if task["id"] == task_id:
-                task["done"] = True  # Intentional recruitment bug A1
+                task["completed"] = True
                 return task
         raise ValueError("Task not found")
 
